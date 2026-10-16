@@ -1,0 +1,219 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>HHO Science Explorer</title>
+  <meta name="description" content="HHO Science Explorer — sunlight-driven photocatalytic water splitting educational site for secondary-school competition" />
+  <link rel="stylesheet" href="styles.css">
+  <!-- Chart.js CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js" defer></script>
+  <script src="script.js" defer></script>
+</head>
+<body>
+  <header class="site-header">
+    <div class="container header-inner">
+      <h1 class="brand">HHO Science Explorer</h1>
+      <nav class="main-nav" aria-label="Main navigation">
+        <button class="nav-toggle" id="navToggle" aria-expanded="false">☰</button>
+        <ul id="navList" class="nav-list">
+          <li><a href="#home">Home</a></li>
+          <li><a href="#explain">Photocatalysis</a></li>
+          <li><a href="#diagram">Interactive Diagram</a></li>
+          <li><a href="#journal">Experiment Journal</a></li>
+          <li><a href="#results">Results Dashboard</a></li>
+          <li><a href="#budget">Budget (KES)</a></li>
+          <li><a href="#safety">Safety</a></li>
+          <li><a href="#presentation">Presentation</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section id="home" class="hero container">
+      <div class="hero-content">
+        <h2>HHO Science Explorer</h2>
+        <p class="lede">A student project website template to explore sunlight-driven photocatalytic water splitting (educational). "HHO" here is the project name — not a replacement for correct chemical notation.</p>
+        <p class="note">Important: sample test data on this site is simulated. Actual gas-production testing requires qualified supervision and suitable laboratory equipment. No experimental claims are made.</p>
+        <a class="primary-btn" href="#diagram">Try the Interactive Diagram</a>
+      </div>
+      <div class="hero-art">
+        <img alt="stylized hydrogen energy icon" src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='240' height='160'><rect rx='12' width='240' height='160' fill='%2308a0e9'/><text x='50%' y='50%' font-size='28' text-anchor='middle' fill='white' dy='.3em'>HHO</text></svg>">
+      </div>
+    </section>
+
+    <section id="explain" class="container card">
+      <h3>What is sunlight-driven photocatalytic water splitting?</h3>
+      <p>This is an approach where light (usually sunlight) excites a photocatalyst material so it can drive chemical reactions that split water (H2O) into hydrogen (H2) and oxygen (O2) without electrical electrolysis. Photocatalysts absorb photons and create electron–hole pairs that participate in redox reactions at the catalyst surface. This is a research area in solar fuels and materials science.</p>
+      <p>Balanced chemical equation (molecular):</p>
+      <p class="equation">2 H2O → 2 H2 + O2</p>
+      <p>Why 2:1 hydrogen-to-oxygen? Each water molecule has two hydrogen atoms and one oxygen atom. When two water molecules split, the hydrogen atoms pair up to make two H2 molecules (four H atoms total arranged into two H2 molecules) while the two oxygen atoms combine to make one O2 molecule — hence the 2:1 ratio by molecule count (H2 : O2).</p>
+      <p><strong>Note:</strong> This page explains the chemistry as background. The site does not claim that any gas volumes shown are measured in a lab — sample data below is simulated for teaching.</p>
+    </section>
+
+    <section id="diagram" class="container card">
+      <h3>Interactive educational diagram</h3>
+      <p>Click "Simulate photocatalysis" to animate a conceptual diagram showing water, sunlight, a photocatalyst, and the expected H2 and O2 products. This is an educational animation, not a measurement.</p>
+
+      <div class="diagram-area" aria-hidden="false">
+        <!-- Simple SVG diagram -->
+        <svg id="photodiagram" viewBox="0 0 800 300" class="diagram-svg" role="img" aria-label="Photocatalytic water-splitting diagram">
+          <!-- Sun -->
+          <g id="sun" transform="translate(60,60)">
+            <circle cx="0" cy="0" r="36" fill="#FFD24D" />
+            <text x="0" y="52" font-size="12" text-anchor="middle" fill="#333">Sunlight</text>
+          </g>
+
+          <!-- Water molecules (blue dots + H/O labels) -->
+          <g id="waterGroup" transform="translate(200,150)">
+            <!-- We'll generate water molecules with JS -->
+          </g>
+
+          <!-- Photocatalyst -->
+          <g id="catalyst" transform="translate(420,180)">
+            <rect x="-60" y="-20" width="120" height="40" rx="8" fill="#444" />
+            <text x="0" y="6" font-size="14" text-anchor="middle" fill="#fff">Photocatalyst</text>
+          </g>
+
+          <!-- H2 product -->
+          <g id="h2Group" transform="translate(620,110)">
+            <circle cx="0" cy="0" r="12" fill="#60A5FA" opacity="0.95"/>
+            <text x="24" y="6" font-size="14" fill="#0b3d91">H2</text>
+            <text x="0" y="28" font-size="12" fill="#333" text-anchor="middle">(molecule)</text>
+          </g>
+
+          <!-- O2 product -->
+          <g id="o2Group" transform="translate(620,220)">
+            <circle cx="0" cy="0" r="12" fill="#A78BFA" />
+            <text x="24" y="6" font-size="14" fill="#4b2f8c">O2</text>
+            <text x="0" y="28" font-size="12" fill="#333" text-anchor="middle">(molecule)</text>
+          </g>
+        </svg>
+      </div>
+
+      <div class="diagram-controls">
+        <button id="runSimBtn" class="primary-btn">Simulate photocatalysis</button>
+        <button id="resetSimBtn" class="secondary-btn">Reset</button>
+        <p class="small">Simulation is conceptual. It illustrates the 2:1 H2:O2 molecular ratio visually — not measured gas volumes.</p>
+      </div>
+    </section>
+
+    <section id="journal" class="container card">
+      <h3>Experiment journal</h3>
+      <p>Record observations, dates, and notes. Entries are stored in your browser (localStorage). You can export entries as CSV.</p>
+
+      <form id="journalForm" class="journal-form" aria-label="Add journal entry">
+        <input type="text" id="entryTitle" placeholder="Title (e.g., Trial 1)" required>
+        <input type="date" id="entryDate" required>
+        <textarea id="entryNotes" placeholder="Notes and observations" rows="4" required></textarea>
+        <div class="form-actions">
+          <button type="submit" class="primary-btn">Add entry</button>
+          <button type="button" id="exportJournalBtn" class="secondary-btn">Export CSV</button>
+        </div>
+      </form>
+
+      <ul id="journalList" class="journal-list" aria-live="polite"></ul>
+    </section>
+
+    <section id="results" class="container card">
+      <h3>Results dashboard</h3>
+      <p>Charts show example simulated data (marked as simulated). Replace with real measured data only after proper lab testing and supervision.</p>
+
+      <div class="charts-grid">
+        <div class="chart-card">
+          <h4>Gas volumes (simulated)</h4>
+          <canvas id="gasChart" aria-label="Simulated gas volumes chart" role="img"></canvas>
+          <div class="chart-controls">
+            <button id="loadSampleBtn" class="secondary-btn">Load sample (simulated)</button>
+            <button id="clearResultsBtn" class="secondary-btn">Clear</button>
+            <button id="exportResultsBtn" class="primary-btn">Export CSV</button>
+          </div>
+        </div>
+        <div class="chart-card">
+          <h4>H2 : O2 ratio (molecules)</h4>
+          <canvas id="ratioChart" aria-label="H2 to O2 ratio donut chart" role="img"></canvas>
+        </div>
+      </div>
+    </section>
+
+    <section id="budget" class="container card">
+      <h3>Budget (Kenyan shillings - KES)</h3>
+      <p>Enter planned items and costs in KES. The total updates automatically.</p>
+
+      <form id="budgetForm" class="budget-form">
+        <input type="text" id="itemName" placeholder="Item (e.g., Photocatalyst powder)" required>
+        <input type="number" id="itemCost" placeholder="Cost (KES)" min="0" required>
+        <div class="form-actions">
+          <button type="submit" class="primary-btn">Add item</button>
+          <button type="button" id="exportBudgetBtn" class="secondary-btn">Export CSV</button>
+        </div>
+      </form>
+
+      <table class="budget-table" id="budgetTable" aria-live="polite">
+        <thead><tr><th>Item</th><th>Cost (KES)</th><th></th></tr></thead>
+        <tbody></tbody>
+        <tfoot><tr><td>Total</td><td id="budgetTotal">KES 0</td><td></td></tr></tfoot>
+      </table>
+      <p class="small">Prices are estimates. Budget should be prepared and approved by project supervisors and, where relevant, school administrators.</p>
+    </section>
+
+    <section id="safety" class="container card">
+      <h3>Safety guidance</h3>
+      <ul>
+        <li>Always work under qualified supervision when handling chemicals, gases, or reactions.</li>
+        <li>Hydrogen is flammable and forms explosive mixtures with air — never carry out gas collection without proper ventilation, gas-handling equipment, and trained staff.</li>
+        <li>Use appropriate PPE: safety glasses, gloves, lab coat. Know emergency procedures (fire extinguisher, gas shutoff, eyewash).</li>
+        <li>Do not attempt open-flame ignition or unauthorized testing. Contact your teacher and laboratory staff.</li>
+      </ul>
+      <p class="note">This page is educational. It does not replace official laboratory safety training.</p>
+    </section>
+
+    <section id="presentation" class="container card">
+      <h3>Competition presentation (slide template)</h3>
+      <p>Use this interactive slide deck as a template for your presentation. Edit text for your project specifics.</p>
+      <div class="slides" id="slidesContainer" role="region" aria-label="Presentation slides">
+        <div class="slide active">
+          <h2>HHO Science Explorer — Project Title</h2>
+          <p>Team name / school</p>
+        </div>
+        <div class="slide">
+          <h2>Background</h2>
+          <ul><li>Sunlight-driven photocatalysis overview</li><li>Why hydrogen as an energy carrier?</li></ul>
+        </div>
+        <div class="slide">
+          <h2>Hypothesis &amp; Objectives</h2>
+          <p>State your hypothesis and measurable objectives.</p>
+        </div>
+        <div class="slide">
+          <h2>Methods (plan)</h2>
+          <p>Describe materials, photocatalyst, light source, sensors, and safety steps. Note: actual gas tests require supervised lab work.</p>
+        </div>
+        <div class="slide">
+          <h2>Simulated Results (example)</h2>
+          <p>Sample graphs are shown on the Results page. Mark them as simulated unless you have measured data.</p>
+        </div>
+        <div class="slide">
+          <h2>Budget &amp; Timeline</h2>
+          <p>Refer to Budget section. Include milestones for supervised lab work.</p>
+        </div>
+        <div class="slide">
+          <h2>Conclusions &amp; Next steps</h2>
+          <p>Summarize and propose next steps for research or testing with proper lab support.</p>
+        </div>
+      </div>
+      <div class="slide-controls">
+        <button id="prevSlide" class="secondary-btn">◀ Prev</button>
+        <button id="nextSlide" class="primary-btn">Next ▶</button>
+      </div>
+      <p class="small">Slides are editable in the HTML or via the site UI (for advanced improvements).</p>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <p>HHO Science Explorer — educational template. Project name "HHO" is a label; the correct chemical formula shown in the explanation above. Sample data is simulated. &copy; <span id="year"></span></p>
+    </div>
+  </footer>
+</body>
+</html>
